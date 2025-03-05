@@ -63,6 +63,20 @@
             color: red;
             margin-top: 10px;
         }
+        /* Стили для кастомного уведомления */
+        .custom-alert {
+            display: none;
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #4CAF50;
+            color: white;
+            padding: 15px 30px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+        }
     </style>
 </head>
 <body>
@@ -78,6 +92,9 @@
             <p id="error-message" class="error-message"></p>
         </div>
     </div>
+
+    <!-- Кастомное уведомление -->
+    <div id="custom-alert" class="custom-alert">Регистрация успешно завершена!</div>
 
     <!-- Добавляем Firebase SDK -->
     <script type="module">
@@ -102,6 +119,7 @@
         // Обработка формы регистрации
         const signupForm = document.getElementById('signup-form');
         const errorMessage = document.getElementById('error-message');
+        const customAlert = document.getElementById('custom-alert');
 
         signupForm.addEventListener('submit', (e) => {
             e.preventDefault();
@@ -122,8 +140,14 @@
                     // Успешная регистрация
                     const user = userCredential.user;
                     console.log("Пользователь зарегистрирован:", user);
-                    alert("Регистрация прошла успешно!");
-                    window.location.href = "/dashboard"; // Перенаправление после регистрации
+
+                    // Показываем кастомное уведомление
+                    customAlert.style.display = 'block';
+                    setTimeout(() => {
+                        customAlert.style.display = 'none';
+                        // Перенаправление на указанный сайт
+                        window.location.href = "https://authtest01.netlify.app";
+                    }, 2000); // Уведомление показывается 2 секунды
                 })
                 .catch((error) => {
                     // Обработка ошибок
