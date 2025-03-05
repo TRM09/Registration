@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Регистрация</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .container {
+            width: 56.25vh; /* 9/16 = 0.5625 */
+            height: 100vh; /* Вертикальный формат 16:9 */
+            max-width: 100vw;
+            max-height: 177.78vw; /* 16:9 aspect ratio */
+            background-color: #fff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+        }
+        .registration-form {
+            background-color: #fff;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+            width: 80%;
+            text-align: center;
+        }
+        .registration-form h2 {
+            margin-bottom: 20px;
+            font-size: 24px;
+            color: #800080; /* Фиолетовый цвет */
+        }
+        .registration-form input {
+            width: calc(100% - 20px); /* Ширина как у кнопки */
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        .registration-form button {
+            width: 100%;
+            padding: 10px;
+            background-color: #007bff;
+            border: none;
+            border-radius: 5px;
+            color: #fff;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        .registration-form button:hover {
+            background-color: #0056b3;
+        }
+        .error-message {
+            color: red;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="registration-form">
+            <h2>Регистрация</h2>
+            <form id="signup-form">
+                <input type="email" id="email" placeholder="Email" required>
+                <input type="password" id="password" placeholder="Пароль" required>
+                <input type="password" id="confirm-password" placeholder="Подтвердите пароль" required>
+                <button type="submit">Далее</button>
+            </form>
+            <p id="error-message" class="error-message"></p>
+        </div>
+    </div>
+
+    <!-- Добавляем Firebase SDK -->
+    <script type="module">
+        // Импорт Firebase
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.1.0/firebase-app.js";
+        import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.1.0/firebase-auth.js";
+
+        // Конфигурация Firebase
+        const firebaseConfig = {
+            apiKey: "AIzaSyALUjDgDaNb2QKYYpLNTgEiEtTP6jstI18",
+            authDomain: "reshenietest01.firebaseapp.com",
+            projectId: "reshenietest01",
+            storageBucket: "reshenietest01.firebasestorage.app",
+            messagingSenderId: "825481626492",
+            appId: "1:825481626492:web:5efa3dc1a6ea63b1879af9"
+        };
+
+        // Инициализация Firebase
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+
+        // Обработка формы регистрации
+        const signupForm = document.getElementById('signup-form');
+        const errorMessage = document.getElementById('error-message');
+
+        signupForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const confirmPassword = document.getElementById('confirm-password').value;
+
+            // Проверка совпадения паролей
+            if (password !== confirmPassword) {
+                errorMessage.textContent = "Пароли не совпадают";
+                return;
+            }
+
+            // Регистрация пользователя через Firebase
+            createUserWithEmailAndPassword(auth, email, password)
+                .then((userCredential) => {
+                    // Успешная регистрация
+                    const user = userCredential.user;
+                    console.log("Пользователь зарегистрирован:", user);
+                    alert("Регистрация прошла успешно!");
+                    window.location.href = "/dashboard"; // Перенаправление после регистрации
+                })
+                .catch((error) => {
+                    // Обработка ошибок
+                    console.error("Ошибка регистрации:", error.message);
+                    errorMessage.textContent = error.message;
+                });
+        });
+    </script>
+</body>
+</html>
